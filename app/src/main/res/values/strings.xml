@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">SahaYatri</string>
+    <string name="title_activity_drivers_map">Map</string>
+    <string name="login"><u>"Do not have an account?</u> <b>Click here</b>"</string>
+    <string name="picked_customer">picked customer</string>
+    <string name="online">Online</string>
+    <string name="title_activity_driver_login">DriverLogin</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+
+    <string-array name="code_options">
+        <item>SuryaBinayak</item>
+        <item>Sallaghari</item>
+        <item>RadheRadhe</item>
+        <item>Thimi</item>
+        <item>Jadibutti</item>
+        <item>Koteswor</item>
+        <item>Shantinagar</item>
+        <item>Baneshwor</item>
+        <item>Maitighar</item>
+        <item>Ratnapark</item>
+
+    </string-array>
+    <string name="select_code_prompt">Destination</string>
+
+
+</resources>

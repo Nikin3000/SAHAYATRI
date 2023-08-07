@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ImageView
+        android:layout_width="237dp"
+        android:layout_height="125dp"
+        android:src="@drawable/top_background" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="20sp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Email"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/signupridermail"
+            android:layout_width="wrap_content"
+            android:layout_height="50sp"
+            android:background="@drawable/edittext_background"
+            android:ems="15"
+            android:hint="Enter your mail"
+            android:textColor="@color/black"
+            android:padding="12dp"
+            android:textSize="20sp" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Password"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="50sp"
+            android:background="@drawable/edittext_background"
+            android:ems="15"
+            android:hint="Enter your password"
+            android:inputType="textPassword"
+            android:textColor="@color/black"
+            android:padding="12dp"
+            android:textSize="20sp"
+            android:id="@+id/signupriderpassword"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Confirm Password"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="50sp"
+            android:background="@drawable/edittext_background"
+            android:ems="15"
+            android:hint="Enter your password again"
+            android:inputType="textPassword"
+            android:textColor="@color/black"
+            android:padding="12dp"
+            android:textSize="20sp"
+            android:id="@+id/signupriderpasswordagain"/>
+
+
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Signup"
+            android:ems="10"
+            android:id="@+id/ridersignup"
+            android:layout_gravity="center"
+            android:layout_marginTop="15sp"/>
+
+
+    </LinearLayout>
+</LinearLayout>

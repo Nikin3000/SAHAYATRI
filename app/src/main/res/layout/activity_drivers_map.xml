@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id ="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/gray"
+        map:menu="@menu/drawer_menu"
+        />
+
+
+        <Switch
+            android:id="@+id/status_driver"
+            android:layout_width="98dp"
+            android:layout_height="32dp"
+            android:layout_centerHorizontal="true"
+            android:background="@android:color/black"
+            android:text="@string/online"
+            android:textSize="17sp" />
+
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="0dp"
+        android:layout_below="@+id/status_driver"
+        android:layout_above="@+id/bottom_navigation"
+        tools:context=".DriverActivity.DriversMapActivity" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="132dp"
+        android:layout_below="@+id/map"
+        android:background="@android:color/holo_orange_light"
+        android:visibility="visible" />
+
+    <Button
+        android:id="@+id/rideStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/picked_customer"
+        android:layout_below="@id/status_driver"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_above="@id/bottom_navigation"
+        android:layout_gravity="bottom">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/customerInfo"
+            android:layout_gravity="bottom"
+            android:orientation="horizontal"
+            android:background="@android:color/white"
+            android:visibility="gone">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="40sp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/cusName"
+                android:textColor="@color/black"
+                android:paddingBottom="10sp"
+                android:paddingTop="20sp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/cusPhone"
+                android:textColor="@color/black"
+                android:paddingBottom="10sp"
+                android:paddingTop="20sp"/>
+
+        </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+
+</RelativeLayout>
+

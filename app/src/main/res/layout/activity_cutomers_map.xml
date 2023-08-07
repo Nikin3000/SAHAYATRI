@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id ="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/gray"
+        map:menu="@menu/drawer_menu"
+
+        />
+
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="0dp"
+        android:layout_above="@+id/bottom_navigation"
+        tools:context=".DriverActivity.DriversMapActivity" />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:orientation="horizontal"
+        android:layout_marginBottom="12dp"
+        android:layout_above="@+id/request"
+        android:weightSum="1" >
+
+
+        <Spinner
+            android:id="@+id/destinationSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:background="@color/black"
+            android:hint="@string/select_code_prompt"
+            android:textColorHint="@color/black"
+            android:textColor="@color/black"
+            android:gravity="center_vertical"
+            android:layout_weight="0.2"
+            android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft"
+            android:entries="@array/code_options" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:layout_weight="0.8"
+        android:textSize="12dp"
+        android:text="Confirm"
+        android:background="@android:color/holo_orange_light"
+        android:id="@+id/saveDestination" />
+
+    </LinearLayout>
+
+    <Button
+        android:layout_width="140dp"
+        android:layout_height="wrap_content"
+        android:text="Request A Ride"
+        android:id="@+id/request"
+        android:layout_above="@id/bottom_navigation"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:background="@android:color/holo_orange_light"/>
+
+
+
+
+<LinearLayout
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:orientation="vertical"
+android:layout_gravity="bottom">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/driverInfo"
+    android:layout_gravity="bottom"
+    android:orientation="horizontal"
+    android:background="@android:color/white"
+    android:visibility="gone">
+    <ImageView
+        android:layout_width="50sp"
+        android:layout_height="50sp"
+        android:id="@+id/driverProfileImage"
+        android:src="@drawable/power_18"
+        android:padding="20sp"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="40sp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/driverName"
+            android:textColor="@color/black"
+            android:paddingBottom="10sp"
+            android:paddingTop="20sp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:id="@+id/driverPhone"
+            android:paddingBottom="10sp"
+            android:paddingTop="20sp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/driverCar"
+            android:textColor="@color/black"
+            android:paddingBottom="10sp"
+            android:paddingTop="20sp"/>
+        <RatingBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ratingBar"
+            android:textColor="@color/black"
+            android:layout_gravity="center"
+            android:numStars="5"
+            android:stepSize="0.1"/>
+    </LinearLayout>
+</LinearLayout>
+</LinearLayout>
+
+</RelativeLayout>
