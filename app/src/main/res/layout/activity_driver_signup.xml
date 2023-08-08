@@ -18,6 +18,27 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Mobile Number"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/ridermobilenumber"
+            android:layout_width="wrap_content"
+            android:layout_height="50sp"
+            android:background="@drawable/edittext_background"
+            android:ems="15"
+            android:hint="Enter your mail"
+            android:textColor="@color/black"
+            android:padding="12dp"
+            android:textSize="20sp" />
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="Email"
             android:textColor="@color/black"
             android:textSize="20sp"
