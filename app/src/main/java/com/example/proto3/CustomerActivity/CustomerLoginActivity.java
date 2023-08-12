@@ -38,6 +38,13 @@ public class CustomerLoginActivity extends AppCompatActivity {
         password=findViewById(R.id.riderloginpassword);
         cb=findViewById(R.id.checkbox);
         auth=FirebaseAuth.getInstance();
+
+        if (auth.getCurrentUser() != null) {
+            // User is already signed in, navigate to the desired activity
+            Intent i = new Intent(CustomerLoginActivity.this, CustomersMapActivity.class);
+            startActivity(i);
+            finish();
+        }
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
