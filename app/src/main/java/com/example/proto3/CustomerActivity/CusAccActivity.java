@@ -116,6 +116,7 @@ public class CusAccActivity extends AppCompatActivity {
 
     public void LogOutUser()
     {
+        FirebaseAuth.getInstance().signOut();
         Intent startPageIntent = new Intent(CusAccActivity.this , WelcomeActivity.class);
         startPageIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(startPageIntent);

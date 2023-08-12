@@ -3,6 +3,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
@@ -38,6 +39,15 @@ public class RiderLoginActivity extends AppCompatActivity {
         password=findViewById(R.id.riderloginpassword);
         cb=findViewById(R.id.checkbox);
         auth=FirebaseAuth.getInstance();
+
+
+        if (auth.getCurrentUser() != null) {
+            // User is already signed in, navigate to the desired activity
+            Intent i = new Intent(RiderLoginActivity.this, DriversMapActivity.class);
+            startActivity(i);
+            finish();
+        }
+
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -47,6 +57,7 @@ public class RiderLoginActivity extends AppCompatActivity {
                             password.getText().toString()).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                         @Override
                         public void onSuccess(AuthResult authResult) {
+
                             Intent i =new Intent(RiderLoginActivity.this, DriversMapActivity.class);
                             startActivity(i);
                         }

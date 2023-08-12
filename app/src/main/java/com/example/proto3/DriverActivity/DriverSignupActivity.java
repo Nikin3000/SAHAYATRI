@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -103,32 +104,38 @@ public class DriverSignupActivity extends AppCompatActivity {
     }
 
     public void requestOTP(String phoneNum) {
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(phoneNum, 60L, TimeUnit.SECONDS, this, new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-            //When User doesnt get OTP and we force server to send the OTP code,Force Resending token is used
-            //"s" contains the verification code id
-            @Override
-            public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-                super.onCodeSent(s, forceResendingToken);
-                Toast.makeText(DriverSignupActivity.this, "OTP sent successfully", Toast.LENGTH_SHORT).show();
-            }
+
+
+        try {
+            PhoneAuthProvider.getInstance().verifyPhoneNumber(phoneNum, 60L, TimeUnit.SECONDS, this, new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                //When User doesnt get OTP and we force server to send the OTP code,Force Resending token is used
+                //"s" contains the verification code id
+                @Override
+                public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+                    super.onCodeSent(s, forceResendingToken);
+                    Toast.makeText(DriverSignupActivity.this, "OTP sent successfully", Toast.LENGTH_SHORT).show();
+                }
 //When OTP is not entered in the given time frame
 
-            @Override
-            public void onCodeAutoRetrievalTimeOut(@NonNull String s) {
-                super.onCodeAutoRetrievalTimeOut(s);
-            }
+                @Override
+                public void onCodeAutoRetrievalTimeOut(@NonNull String s) {
+                    super.onCodeAutoRetrievalTimeOut(s);
+                }
 
-            @Override
-            public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
+                @Override
+                public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
 
-            }
+                }
 
-            @Override
-            public void onVerificationFailed(@NonNull FirebaseException e) {
-                Toast.makeText(DriverSignupActivity.this,"Cannot Create Account"+ e.getMessage(),Toast.LENGTH_SHORT).show();
-                e.printStackTrace();
-            }
-        });
+                @Override
+                public void onVerificationFailed(@NonNull FirebaseException e) {
+                    Toast.makeText(DriverSignupActivity.this, "Cannot Create Account" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            });
+        }catch (Exception e){
+            Log.e("Error Phone Auth", "Phone auth credential not called");
+        }
     }
 
     private void showOTPVerificationPopup() {
@@ -144,7 +151,12 @@ public class DriverSignupActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         String userEnteredOTP = editTextOTP.getText().toString();
                         // Call the method to verify the OTP
-                        verifyOTP(userEnteredOTP);
+                        try {
+                            verifyOTP(userEnteredOTP);
+                        }
+                        catch (Exception e){
+                            Log.e("verifyOTP","Cannot call verify otp function");
+                        }
                     }
                 })
                 .setNegativeButton("Cancel", null)
