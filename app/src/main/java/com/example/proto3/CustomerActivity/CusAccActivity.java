@@ -15,8 +15,12 @@ import com.example.proto3.R;
 import com.example.proto3.WelcomeActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,9 +29,8 @@ public class CusAccActivity extends AppCompatActivity {
 
     private boolean islogout;
 
-    private Button mLogout, mSave;
-    private TextView Name,Address,Email,Phone;
-    private ImageView Image;
+    TextView profilePhone, profileEmail, profileUsername, profilePassword;
+    Button editProfile,mLogout;
     private FirebaseDatabase database;
     private DatabaseReference userRef;
     private static final String USER = "user";
@@ -43,11 +46,11 @@ public class CusAccActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cus_acc);
 
-        Name = findViewById(R.id.profile_text);
-        Address = findViewById(R.id.profile_address);
-        Email = findViewById(R.id.profile_email);
-        Phone = findViewById(R.id.profile_phone);
-
+        profilePhone = findViewById(R.id.Phone);
+        profileEmail = findViewById(R.id.mail);
+        profileUsername = findViewById(R.id.Name);
+        profilePassword = findViewById(R.id.Password);
+        editProfile = findViewById(R.id.editprofile);
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         userID = mAuth.getCurrentUser().getUid();
         mCusDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(userID);
@@ -79,14 +82,57 @@ public class CusAccActivity extends AppCompatActivity {
             }
         });
 
-        //Save info
-        mSave = (Button) findViewById(R.id.profile_save);
-        mSave.setOnClickListener(new View.OnClickListener() {
+        showAllUsersData();
+        editProfile.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                saveUserInformation();
+            public void onClick(View view) {
+                passUsersData();
             }
         });
+    }
+    public void showAllUsersData(){
+        Intent intent = getIntent();
+        String phoneUsers = intent.getStringExtra("phone");
+        String emailUsers = intent.getStringExtra("email");
+        String usernameUsers = intent.getStringExtra("username");
+        String passwordUsers = intent.getStringExtra("password");
+
+        profilePhone.setText(phoneUsers);
+        profileEmail.setText(emailUsers);
+        profileUsername.setText(usernameUsers);
+        profilePassword.setText(passwordUsers);
+    }
+    public void passUsersData(){
+        String usersUsername = profileUsername.getText().toString().trim();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
+        Query checkUsersDatabase = reference.orderByChild("username").equalTo(usersUsername);
+        checkUsersDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    String phoneFromDB = snapshot.child(usersUsername).child("phone").getValue(String.class);
+                    String emailFromDB = snapshot.child(usersUsername).child("email").getValue(String.class);
+                    String usernameFromDB = snapshot.child(usersUsername).child("username").getValue(String.class);
+                    String passwordFromDB = snapshot.child(usersUsername).child("password").getValue(String.class);
+                    Intent intent = new Intent(CusAccActivity.this, CusEditProfile.class);
+                    intent.putExtra("phone", phoneFromDB);
+                    intent.putExtra("email", emailFromDB);
+                    intent.putExtra("username", usernameFromDB);
+                    intent.putExtra("password", passwordFromDB);
+                    startActivity(intent);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+editProfile.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        Intent i=new Intent(CusAccActivity.this, CusEditProfile.class);
+        startActivity(i);
+    }
+});
 
         //Customer logout activity
         mLogout = (Button) findViewById(R.id.logout);
@@ -99,19 +145,8 @@ public class CusAccActivity extends AppCompatActivity {
         });
 
     }
-    private void saveUserInformation() {
-        String name = Name.getText().toString();
-        String phone = Phone.getText().toString();
-        String address = Address.getText().toString();
-        String email = Email.getText().toString();
 
-        Map<String, Object> userInfo = new HashMap<String, Object>();
-        userInfo.put("name", name);
-        userInfo.put("phone", phone);
-        userInfo.put("email", email);
-        userInfo.put("address", address);
-        mCusDatabase.updateChildren(userInfo);
-    }
+
 
 
     public void LogOutUser()
@@ -123,3 +158,4 @@ public class CusAccActivity extends AppCompatActivity {
     }
 
 }
+

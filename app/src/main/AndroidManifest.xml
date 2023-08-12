@@ -18,6 +18,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".CustomerActivity.CusEditProfile"
+            android:exported="false" />
+        <activity
             android:name=".CustomerActivity.CustomerSignupActivity"
             android:exported="false" />
         <activity
