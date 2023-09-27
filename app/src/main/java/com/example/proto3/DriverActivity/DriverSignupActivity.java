@@ -29,7 +29,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class DriverSignupActivity extends AppCompatActivity {
@@ -38,7 +42,12 @@ public class DriverSignupActivity extends AppCompatActivity {
     FirebaseAuth auth;
 
     String mVerification_id;
-    String countrycode="+977";
+
+    private DatabaseReference mDriverDatabase;
+    private String userID;
+
+
+
 
 
     @Override
@@ -50,6 +59,8 @@ public class DriverSignupActivity extends AppCompatActivity {
         vemail = findViewById(R.id.signupridermail);
         password = findViewById(R.id.signupriderpassword);
         phone = findViewById(R.id.ridermobilenumber);
+
+
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,6 +124,7 @@ public class DriverSignupActivity extends AppCompatActivity {
                 @Override
                 public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
                     super.onCodeSent(s, forceResendingToken);
+                    mVerification_id = s;
                     Toast.makeText(DriverSignupActivity.this, "OTP sent successfully", Toast.LENGTH_SHORT).show();
                 }
 //When OTP is not entered in the given time frame
@@ -141,7 +153,7 @@ public class DriverSignupActivity extends AppCompatActivity {
     private void showOTPVerificationPopup() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
-        View view = inflater.inflate(R.layout.activity_driver_otp, null);
+        View view = inflater.inflate(R.layout.activity_otp, null);
         editTextOTP = view.findViewById(R.id.editTextOTP);
 
         builder.setView(view)
@@ -152,6 +164,7 @@ public class DriverSignupActivity extends AppCompatActivity {
                         String userEnteredOTP = editTextOTP.getText().toString();
                         // Call the method to verify the OTP
                         try {
+                            Log.e("type check:",userEnteredOTP);
                             verifyOTP(userEnteredOTP);
                         }
                         catch (Exception e){
@@ -163,8 +176,9 @@ public class DriverSignupActivity extends AppCompatActivity {
                 .show();
     }
 
-    private void verifyOTP(String userOTP) {
+    public void verifyOTP(@NonNull String userOTP) {
         if (!userOTP.isEmpty() && userOTP.length()==6){
+            Log.e("On verifyOTP", "Here");
             PhoneAuthCredential credential= PhoneAuthProvider.getCredential(mVerification_id,userOTP);
             verifyAuth(credential);
         }
@@ -173,7 +187,8 @@ public class DriverSignupActivity extends AppCompatActivity {
         }
     }
 
-    private void verifyAuth(PhoneAuthCredential credential) {
+    public void verifyAuth(PhoneAuthCredential credential) {
+        Log.e("On verifyAuth", "Here");
         auth.signInWithCredential(credential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -182,7 +197,9 @@ public class DriverSignupActivity extends AppCompatActivity {
                             password.getText().toString()).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                         @Override
                         public void onSuccess(AuthResult authResult) {
+                            registerData();
                             Toast.makeText(DriverSignupActivity.this, "User registration successfull", Toast.LENGTH_SHORT).show();
+                            auth.signOut();
                             Intent i = new Intent(DriverSignupActivity.this, RiderLoginActivity.class);
                             startActivity(i);
                         }
@@ -198,5 +215,21 @@ public class DriverSignupActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void registerData() {
+        System.out.println("On Register Data");
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        userID = mAuth.getCurrentUser().getUid();
+        mDriverDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(userID);
+
+        String phoneD = phone.getText().toString();
+        String email = vemail.getText().toString();
+
+        Map<String, Object> userInfo = new HashMap<String, Object>();
+        userInfo.put("phone", phoneD);
+        userInfo.put("email", email);
+        mDriverDatabase.updateChildren(userInfo);
+
     }
 }

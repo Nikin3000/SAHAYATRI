@@ -5,35 +5,42 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.proto3.R;
 import com.example.proto3.WelcomeActivity;
+import com.firebase.geofire.GeoFire;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 
 public class CusAccActivity extends AppCompatActivity {
 
     private boolean islogout;
-
-    private Button mLogout, mSave;
+    private Button mLogout, mEdit;
     private TextView Name,Address,Email,Phone;
-    private ImageView Image;
+    private ImageView Profile;
     private FirebaseDatabase database;
     private DatabaseReference userRef;
     private static final String USER = "user";
     private DatabaseReference mCusDatabase;
-    private String userID;
-    String email;
+
+    private String userID,profileURL;
 
 
 
@@ -47,10 +54,40 @@ public class CusAccActivity extends AppCompatActivity {
         Address = findViewById(R.id.profile_address);
         Email = findViewById(R.id.profile_email);
         Phone = findViewById(R.id.profile_phone);
+        Profile = findViewById(R.id.profileImageView);
 
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         userID = mAuth.getCurrentUser().getUid();
         mCusDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(userID);
+
+
+        mCusDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String name = snapshot.child("name").getValue(String.class);
+                String address = snapshot.child("address").getValue(String.class);
+                String email = snapshot.child("email").getValue(String.class);
+                String phone = snapshot.child("phone").getValue(String.class);
+
+                Name.setText(name);
+                Address.setText(address);
+                Email.setText(email);
+                Phone.setText(phone);
+                profileURL = snapshot.child("profileURL").getValue(String.class);
+                Glide.with(CusAccActivity.this)
+                        .load(profileURL)
+                        .placeholder(R.drawable.placeholderimage) // Placeholder image while loading
+                        .error(R.drawable.errorimage) // Error image if loading fails
+                        .transition(DrawableTransitionOptions.withCrossFade()) // Smooth transition
+                        .into(Profile);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
 
 
@@ -80,11 +117,15 @@ public class CusAccActivity extends AppCompatActivity {
         });
 
         //Save info
-        mSave = (Button) findViewById(R.id.profile_save);
-        mSave.setOnClickListener(new View.OnClickListener() {
+        mEdit = (Button) findViewById(R.id.profile_edit);
+        mEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveUserInformation();
+
+                Intent startPageIntent = new Intent(CusAccActivity.this , CusSetProfileActivity.class);
+                startActivity(startPageIntent);
+                finish();
+
             }
         });
 
@@ -99,20 +140,6 @@ public class CusAccActivity extends AppCompatActivity {
         });
 
     }
-    private void saveUserInformation() {
-        String name = Name.getText().toString();
-        String phone = Phone.getText().toString();
-        String address = Address.getText().toString();
-        String email = Email.getText().toString();
-
-        Map<String, Object> userInfo = new HashMap<String, Object>();
-        userInfo.put("name", name);
-        userInfo.put("phone", phone);
-        userInfo.put("email", email);
-        userInfo.put("address", address);
-        mCusDatabase.updateChildren(userInfo);
-    }
-
 
     public void LogOutUser()
     {

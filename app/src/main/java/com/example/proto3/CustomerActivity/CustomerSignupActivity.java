@@ -1,9 +1,12 @@
 package com.example.proto3.CustomerActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,17 +15,38 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.proto3.R;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 public class CustomerSignupActivity extends AppCompatActivity {
     Button register;
-    EditText vemail, password;
+    EditText vemail, password, phone, editTextOTP;
     FirebaseAuth auth;
+
+    String mVerification_id;
+
+    private DatabaseReference mCustomerDatabase;
+    private String userID;
+
+
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -32,26 +56,20 @@ public class CustomerSignupActivity extends AppCompatActivity {
         register = findViewById(R.id.customersignup);
         vemail = findViewById(R.id.signupcustomermail);
         password = findViewById(R.id.signupcustomerpassword);
+        phone = findViewById(R.id.cusmobilenumber);
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 emailValidator(vemail);
                 if (valid()) {
-                    auth.createUserWithEmailAndPassword(vemail.getText().toString(),
-                            password.getText().toString()).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                        @Override
-                        public void onSuccess(AuthResult authResult) {
-                            Toast.makeText(CustomerSignupActivity.this, "User registration successfull", Toast.LENGTH_SHORT).show();
-                            Intent i = new Intent(CustomerSignupActivity.this, CustomerLoginActivity.class);
-                            startActivity(i);
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(CustomerSignupActivity.this, "User registration failed", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    showOTPVerificationPopup();
                 }
+            }
+            private boolean isValidPhone(TextView phone){
+                String phoneNumber = phone.getText().toString();
+                String strippedPhoneNumber = phoneNumber.replaceAll("[\\s\\-()]", "");
+                // Check if the stripped phone number matches the nepali phone number pattern
+                return strippedPhoneNumber.matches("^(98|97|96|95|94)\\d{8}$");
             }
             private void emailValidator(TextView vemail) {
                 String emailToText = vemail.getText().toString();
@@ -72,9 +90,138 @@ public class CustomerSignupActivity extends AppCompatActivity {
                     vemail.setError("Email cannot be empty");
                     validation = false;
                 }
+
+                if (!isValidPhone(phone)) {
+                    Toast.makeText(CustomerSignupActivity.this,"Enter valid phone number",Toast.LENGTH_SHORT).show();
+                    validation = false;
+                }
+                else{
+                    String phoneNum = "+977" + phone.getText().toString();
+                    requestOTP(phoneNum);
+                }
+
                 return validation;
             }
+
         });
+
+    }
+
+    public void requestOTP(String phoneNum) {
+
+
+        try {
+            PhoneAuthProvider.getInstance().verifyPhoneNumber(phoneNum, 60L, TimeUnit.SECONDS, this, new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                //When User doesnt get OTP and we force server to send the OTP code,Force Resending token is used
+                //"s" contains the verification code id
+                @Override
+                public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+                    super.onCodeSent(s, forceResendingToken);
+                    mVerification_id = s;
+                    Toast.makeText(CustomerSignupActivity.this, "OTP sent successfully", Toast.LENGTH_SHORT).show();
+                }
+//When OTP is not entered in the given time frame
+
+                @Override
+                public void onCodeAutoRetrievalTimeOut(@NonNull String s) {
+                    super.onCodeAutoRetrievalTimeOut(s);
+                }
+
+                @Override
+                public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
+
+                }
+
+                @Override
+                public void onVerificationFailed(@NonNull FirebaseException e) {
+                    Toast.makeText(CustomerSignupActivity.this, "Cannot Create Account" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            });
+        }catch (Exception e){
+            Log.e("Error Phone Auth", "Phone auth credential not called");
+        }
+    }
+
+    private void showOTPVerificationPopup() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.activity_otp, null);
+        editTextOTP = view.findViewById(R.id.editTextOTP);
+
+        builder.setView(view)
+                .setTitle("OTP Verification")
+                .setPositiveButton("Verify", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String userEnteredOTP = editTextOTP.getText().toString();
+                        // Call the method to verify the OTP
+                        try {
+                            Log.e("type check:",userEnteredOTP);
+                            verifyOTP(userEnteredOTP);
+                        }
+                        catch (Exception e){
+                            Log.e("verifyOTP","Cannot call verify otp function");
+                        }
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    public void verifyOTP(@NonNull String userOTP) {
+        if (!userOTP.isEmpty() && userOTP.length()==6){
+            Log.e("On verifyOTP", "Here");
+            PhoneAuthCredential credential= PhoneAuthProvider.getCredential(mVerification_id,userOTP);
+            verifyAuth(credential);
+        }
+        else{
+            Toast.makeText(CustomerSignupActivity.this,"Wrong Verification Code",Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void verifyAuth(PhoneAuthCredential credential) {
+        Log.e("On verifyAuth", "Here");
+        auth.signInWithCredential(credential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    auth.createUserWithEmailAndPassword(vemail.getText().toString(),
+                            password.getText().toString()).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                        @Override
+                        public void onSuccess(AuthResult authResult) {
+                            registerData();
+                            Toast.makeText(CustomerSignupActivity.this, "User registration successfull", Toast.LENGTH_SHORT).show();
+                            Intent i = new Intent(CustomerSignupActivity.this, CustomerLoginActivity.class);
+                            startActivity(i);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(CustomerSignupActivity.this, "User registration failed", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                }else {
+                    Toast.makeText(CustomerSignupActivity.this,"Authentication Failed",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    public void registerData() {
+        System.out.println("On Register Data");
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        userID = mAuth.getCurrentUser().getUid();
+        mCustomerDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Customers").child(userID);
+
+        String phoneD = phone.getText().toString();
+        String email = vemail.getText().toString();
+
+        Map<String, Object> userInfo = new HashMap<String, Object>();
+        userInfo.put("phone", phoneD);
+        userInfo.put("email", email);
+        mCustomerDatabase.updateChildren(userInfo);
 
     }
 }

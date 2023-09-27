@@ -6,9 +6,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -20,6 +24,11 @@ import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.example.proto3.DriverActivity.DrivAccActivity;
+import com.example.proto3.Services.SendMessageTask;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -66,7 +75,7 @@ public class CustomersMapActivity extends FragmentActivity implements OnMapReady
 
     private FusedLocationProviderClient mFusedLocationClient;
 
-    private Button mRequest, mSave;
+    private Button mRequest, mCancel;
 
     private LatLng pickupLocation;
 
@@ -76,7 +85,7 @@ public class CustomersMapActivity extends FragmentActivity implements OnMapReady
 
     private SupportMapFragment mapFragment;
 
-    private String destination, requestService;
+    private String destination, requestService, selectedCode, customerName, customerPhone;
 
     private LatLng destinationLatLng;
 
@@ -84,9 +93,14 @@ public class CustomersMapActivity extends FragmentActivity implements OnMapReady
 
     private ImageView mDriverProfileImage;
 
-    private TextView mDriverName, mDriverPhone, mDriverCar, mDestination;
+    private TextView mDriverName, mDriverPhone, mDriverTaxi, mDestination;
 
     private RatingBar mRatingBar;
+
+    private MediaPlayer mediaPlayer;
+
+    Handler handler = new Handler();
+    int delayDuration = 10000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,8 +116,8 @@ public class CustomersMapActivity extends FragmentActivity implements OnMapReady
         codeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedCode = parent.getItemAtPosition(position).toString();
-                // Do something with the selected code
+                selectedCode = parent.getItemAtPosition(position).toString();
+                System.out.println("Destination selected: "+ selectedCode);
             }
 
             @Override
@@ -112,19 +126,39 @@ public class CustomersMapActivity extends FragmentActivity implements OnMapReady
             }
         });
 
-        destinationLatLng = new LatLng(26.65,84.44);
 
 
         mDriverInfo = (LinearLayout) findViewById(R.id.driverInfo);
 
-//        mDriverProfileImage = (ImageView) findViewById(R.id.driverProfileImage);
+        mDriverProfileImage = (ImageView) findViewById(R.id.driverProfileImage);
 
         mDriverName = (TextView) findViewById(R.id.driverName);
         mDriverPhone = (TextView) findViewById(R.id.driverPhone);
-//        mDriverCar = (TextView) findViewById(R.id.driverCar);
+        mDriverTaxi = (TextView) findViewById(R.id.driverTaxi);
    //     mDestination = (TextView) findViewById(R.id.destinationSpinner);
-        mSave = (Button) findViewById(R.id.saveDestination);
 //        mRatingBar = (RatingBar) findViewById(R.id.ratingBar);
+
+        mDriverPhone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Get the phone number from the TextView
+                String phoneNumber = mDriverPhone.getText().toString();
+
+                // Create an Intent to initiate a phone call
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+
+                // Set the phone number in the Intent's data
+                callIntent.setData(Uri.parse("tel:" + phoneNumber));
+
+                // Check for CALL_PHONE permission before initiating the call
+                if (checkSelfPermission(android.Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+                    startActivity(callIntent);
+                } else {
+                    // Request CALL_PHONE permission if not granted
+                    requestPermissions(new String[]{android.Manifest.permission.CALL_PHONE}, 1);
+                }
+            }
+        });
 
 
 
@@ -160,41 +194,65 @@ public class CustomersMapActivity extends FragmentActivity implements OnMapReady
 
         mapFragment.getMapAsync((OnMapReadyCallback) this);
 
-        mSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String typedText = mDestination.getText().toString();
 
-
-
-
-            }
-        });
 
         mRequest = findViewById(R.id.request);
+        mCancel = findViewById(R.id.cancelReq);
 
         mRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+                if (selectedCode.matches("Please Select Destination")){
+                    requestBol = false;
+                    Toast.makeText(CustomersMapActivity.this, "Please select the destination first.",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                else {
+                    DatabaseReference destinationCus = FirebaseDatabase.getInstance().getReference("Users").child("Customers").child(userId);
+
+                    destinationCus.child("latestDestination").setValue(selectedCode);
+                }
+
+
                 requestBol = true;
 
-                String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//                Message message = Message.builder()
+//                        .setNotification(new Notification("Notification Title", "Notification Body"))
+//                        .setToken("DEVICE_TOKEN")
+//                        .build();
+
+
+
 
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference("customerRequest");
                 GeoFire geoFire = new GeoFire(ref);
-                geoFire.setLocation(userId, new GeoLocation(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
+                try {
+                    geoFire.setLocation(userId, new GeoLocation(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
+                    pickupLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                    pickupMarker = mMap.addMarker(new MarkerOptions().position(pickupLocation).title("Pickup Here").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_pickup)));
 
-                pickupLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-                pickupMarker = mMap.addMarker(new MarkerOptions().position(pickupLocation).title("Pickup Here").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_pickup)));
+                    mRequest.setText("Getting your Driver....");
 
-                mRequest.setText("Getting your Driver....");
-
-                getClosestDriver();
-
-
-
+                    getClosestDriver();
+                }
+                catch (Exception e){
+                    Toast.makeText(CustomersMapActivity.this, "Please enable the location on your device.",Toast.LENGTH_SHORT).show();
+                    Log.e("Location Permission", "Please enable the location");
+                }
             }
 
+        });
+
+        mCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("customerRequest");
+                ref.removeValue();
+
+                mRequest.setText("Request A RIDE");
+            }
         });
 
 
@@ -218,9 +276,11 @@ public class CustomersMapActivity extends FragmentActivity implements OnMapReady
                 if (!driverFound && requestBol){
                     System.out.println("Driver found true execute");
                     DatabaseReference mCustomerDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(key);
+
                     mCustomerDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
+                            mCancel.setVisibility(View.GONE);
                             if (dataSnapshot.exists() && dataSnapshot.getChildrenCount()>0){
                                 Map<String, Object> driverMap = (Map<String, Object>) dataSnapshot.getValue();
                                 System.out.println("Driver map:" +driverMap);
@@ -236,9 +296,10 @@ public class CustomersMapActivity extends FragmentActivity implements OnMapReady
                                 String customerId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                                 HashMap map = new HashMap();
                                 map.put("customerRideId", customerId);
-//                                  map.put("destination", destination);
-                                map.put("destinationLat", destinationLatLng.latitude);
-                                map.put("destinationLng", destinationLatLng.longitude);
+                                map.put("name", customerName);
+                                map.put("phone", customerPhone);
+                                map.put("destination", selectedCode);
+
                                 driverRef.updateChildren(map);
 
                                 getDriverLocation();
@@ -246,12 +307,14 @@ public class CustomersMapActivity extends FragmentActivity implements OnMapReady
                                 getHasRideEnded();
                                 mRequest.setText("Looking for Driver Location....");
 
+
                             }
                         }
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
                         }
                     });
+
                 }
             }
 
@@ -272,6 +335,7 @@ public class CustomersMapActivity extends FragmentActivity implements OnMapReady
                     radius++;
                     getClosestDriver();
                 }
+
             }
 
             @Override
@@ -279,6 +343,9 @@ public class CustomersMapActivity extends FragmentActivity implements OnMapReady
 
             }
         });
+
+
+
     }
 
     //Getting Closest Driver Function
@@ -353,13 +420,20 @@ public class CustomersMapActivity extends FragmentActivity implements OnMapReady
                     if(dataSnapshot.child("phone")!=null){
                         mDriverPhone.setText(dataSnapshot.child("phone").getValue().toString());
                     }
-//                    if(dataSnapshot.child("car")!=null){
-//                        mDriverCar.setText(dataSnapshot.child("car").getValue().toString());
-//                    }
-//                    if(dataSnapshot.child("profileImageUrl").getValue()!=null){
-//                        Glide.with(getApplication()).load(dataSnapshot.child("profileImageUrl").getValue().toString()).into(mDriverProfileImage);
-//                    }
-
+                    if(dataSnapshot.child("taxiNumber")!=null){
+                        mDriverTaxi.setText(dataSnapshot.child("taxiNumber").getValue().toString());
+                    }
+                    if(dataSnapshot.child("profileURL").getValue()!=null){
+                        String profileURL = dataSnapshot.child("profileURL").getValue().toString();
+                        Glide.with(CustomersMapActivity.this)
+                                .load(profileURL)
+                                .placeholder(R.drawable.placeholderimage) // Placeholder image while loading
+                                .error(R.drawable.errorimage) // Error image if loading fails
+                                .transition(DrawableTransitionOptions.withCrossFade()) // Smooth transition
+                                .into(mDriverProfileImage);
+                    }
+                    mediaPlayer = MediaPlayer.create(CustomersMapActivity.this, R.raw.notify);
+                    mediaPlayer.start();
 //                    int ratingSum = 0;
 //                    float ratingsTotal = 0;
 //                    float ratingsAvg = 0;
@@ -427,26 +501,19 @@ public class CustomersMapActivity extends FragmentActivity implements OnMapReady
         if (mDriverMarker != null){
             mDriverMarker.remove();
         }
-        mRequest.setText("call Uber");
+//        mRequest.setText("call Uber");
 
-        mDriverInfo.setVisibility(View.VISIBLE);
-        mDriverName.setText("");
-        mDriverPhone.setText("");
+        mDriverInfo.setVisibility(View.GONE);
+        mRequest.setText("REQUEST A RIDE");
+
+        mCancel.setVisibility(View.VISIBLE);
+
+//        mDriverName.setText("");
+//        mDriverPhone.setText("");
 //        mDriverCar.setText("Destination: --");
-        mDriverProfileImage.setImageResource(R.mipmap.ic_pickup);
+//        mDriverProfileImage.setImageResource(R.mipmap.ic_pickup);
     }
 
-    /*-------------------------------------------- Map specific functions -----
-    |  Function(s) onMapReady, buildGoogleApiClient, onLocationChanged, onConnected
-    |
-    |  Purpose:  Find and update user's location.
-    |
-    |  Note:
-    |	   The update interval is set to 1000Ms and the accuracy is set to PRIORITY_HIGH_ACCURACY,
-    |      If you're having trouble with battery draining too fast then change these to lower values
-    |
-    |
-    *-------------------------------------------------------------------*/
 
     LocationCallback mLocationCallback = new LocationCallback(){
         @Override
@@ -470,8 +537,8 @@ public class CustomersMapActivity extends FragmentActivity implements OnMapReady
         mMap = googleMap;
 
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(1000);
-        mLocationRequest.setFastestInterval(1000);
+        mLocationRequest.setInterval(8000);
+        mLocationRequest.setFastestInterval(10000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
@@ -483,7 +550,12 @@ public class CustomersMapActivity extends FragmentActivity implements OnMapReady
         }
 
         mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
-        mMap.setMyLocationEnabled(true);
+        try {
+            mMap.setMyLocationEnabled(true);
+        }
+        catch (Exception e){
+            Log.e("Permission", "Please enable the location permission.");
+        }
 
     }
 
@@ -593,6 +665,14 @@ public class CustomersMapActivity extends FragmentActivity implements OnMapReady
         GeoFire geoFire = new GeoFire(ref);
         geoFire.removeLocation(userId);
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mediaPlayer != null) {
+            mediaPlayer.release(); // Release MediaPlayer resources
+        }
     }
 
 

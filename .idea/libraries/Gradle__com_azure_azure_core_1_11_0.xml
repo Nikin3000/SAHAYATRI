@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Gradle: com.azure:azure-core:1.11.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/AndroidStudioProjects/Class3/caches/modules-2/files-2.1/com.azure/azure-core/1.11.0/1a933d39b2e238c2f1197478f4df9f076776353a/azure-core-1.11.0.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/AndroidStudioProjects/Class3/caches/modules-2/files-2.1/com.azure/azure-core/1.11.0/9fa48d1c08ea8fc60fdfd939bdd79d52c355d138/azure-core-1.11.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/AndroidStudioProjects/Class3/caches/modules-2/files-2.1/com.azure/azure-core/1.11.0/bfafd50bb8f02698681fbc385016f4ecc42e42db/azure-core-1.11.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

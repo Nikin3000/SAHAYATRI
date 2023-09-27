@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Gradle: com.azure:azure-core-http-netty:1.7.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/AndroidStudioProjects/Class3/caches/modules-2/files-2.1/com.azure/azure-core-http-netty/1.7.0/a33e9f5cc83359b7dbdef6563b378477d272fd9a/azure-core-http-netty-1.7.0.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/AndroidStudioProjects/Class3/caches/modules-2/files-2.1/com.azure/azure-core-http-netty/1.7.0/d661c9c63e2bc94a37693132dc2f96510c267934/azure-core-http-netty-1.7.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/AndroidStudioProjects/Class3/caches/modules-2/files-2.1/com.azure/azure-core-http-netty/1.7.0/9986554479fa6ebd0b4da0591ac239df26905e5e/azure-core-http-netty-1.7.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

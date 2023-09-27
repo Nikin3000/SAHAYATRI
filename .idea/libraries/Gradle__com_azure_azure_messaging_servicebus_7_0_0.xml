@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Gradle: com.azure:azure-messaging-servicebus:7.0.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/AndroidStudioProjects/Class3/caches/modules-2/files-2.1/com.azure/azure-messaging-servicebus/7.0.0/700265e07f06dd89d67b56991dff9baa4f6be7ec/azure-messaging-servicebus-7.0.0.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/AndroidStudioProjects/Class3/caches/modules-2/files-2.1/com.azure/azure-messaging-servicebus/7.0.0/ed3d583cd75b7fa0c746a574ee16335a5f5a9f76/azure-messaging-servicebus-7.0.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/AndroidStudioProjects/Class3/caches/modules-2/files-2.1/com.azure/azure-messaging-servicebus/7.0.0/e2564f08422569f146593b783b9c3725de0755e4/azure-messaging-servicebus-7.0.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

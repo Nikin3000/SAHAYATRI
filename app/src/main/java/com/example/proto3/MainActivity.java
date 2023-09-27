@@ -1,6 +1,5 @@
 package com.example.proto3;
 
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;

@@ -13,8 +13,10 @@
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
+    <string name="default_notification_channel_id">sahayatri=default-apple</string>
 
     <string-array name="code_options">
+        <item>Please Select Destination</item>
         <item>SuryaBinayak</item>
         <item>Sallaghari</item>
         <item>RadheRadhe</item>
@@ -28,6 +30,92 @@
 
     </string-array>
     <string name="select_code_prompt">Destination</string>
+    <string name="title_activity_set_profile">SetProfileActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+
+    <string name="Aboutus">
+        "Welcome to Sahayatri - Your Trusted Partner in Travel
+At Sahayatri, we believe in transforming your travel experiences into cherished memories. Our mission is to provide seamless, convenient, and reliable taxi booking services that empower you to explore the world with confidence. As a leading taxi booking application, we are committed to offering a journey that extends beyond just transportation; it's about creating connections and enhancing your travel story.
+Who We Are:
+Sahayatri is more than just a taxi booking app; we are your travel companions. Our team consists of dedicated professionals who are passionate about simplifying your travel plans. Whether you're a solo traveler or a group of explorers, we're here to cater to your every travel need.
+What We Offer:
+Easy Booking: Our user-friendly app allows you to book a ride with just a few taps, making your travel planning effortless.
+Professional Drivers: Our drivers are not just skilled navigators; they are courteous, punctual, and prioritize your safety.
+24/7 Availability: We understand that travel can happen at any time. That's why our services are available round-the-clock.
+Our Vision:
+Our vision is to redefine how you perceive travel. Beyond the destination, it's about the journey. Sahayatri envisions a world where every traveler embarks on their adventure with confidence, knowing that they have a reliable partner to rely on.
+Get in Touch:
+Have questions, suggestions, or feedback? We're here to listen. Feel free to reach out to our dedicated support team at support@sahayatriapp.com"
+
+    </string>
+    <string name="Contact">"We value your feedback, questions, and suggestions. Our dedicated support team is here to assist you and ensure your experience with Sahayatri is exceptional. Feel free to get in touch with us through the following channels:
+Customer Support:
+For any inquiries, issues, or assistance, our customer support team is available 24/7. You can reach out to us at support@sahayatriapp.com Your satisfaction is our priority, and we're here to provide timely and effective solutions.
+Social Media:
+Stay connected with us on social media for updates, news, and exciting offers. Follow us on Facebook, Twitter, and Instagram to join our community of travelers and keep up-to-date with all things Sahayatri.
+Visit Us:
+If you prefer face-to-face interactions, you're welcome to visit our office at Kathamndu, Santinagar Our team will be delighted to meet you, answer your questions, and help you with any inquiries you might have.
+Feedback:
+We greatly appreciate your feedback as it helps us enhance our services. Please share your thoughts and suggestions by emailing feedback@sahayatriapp.com. Your input is invaluable in helping us improve and deliver the best possible experience for our users.
+At Sahayatri, we're committed to building lasting relationships with our users. Your interactions are important to us, and we're dedicated to ensuring that every communication is met with promptness and professionalism. Thank you for choosing Sahayatri for your travel needs."
+    </string>
+    <string name="Privacy">"At Sahayatri, we understand the importance of your privacy and are committed to safeguarding your personal information. This Privacy Policy outlines how we collect, use, disclose, and protect the data you provide us. By using the Sahayatri app and our services, you consent to the practices described in this policy.
+Information We Collect:
+We collect various types of information to provide you with a seamless and personalized experience. This includes:
+•	Personal Information: Your name, contact details, and other information you provide during registration and booking.
+•	Location Data: Your current location for the purpose of providing accurate transportation services.
+•	Usage Information: Information about how you use the app, including your interactions and preferences.
+•	Device Information: Information about the device you use to access the app, such as hardware details and operating system.
+How We Use Your Information:
+We use the collected information for various purposes, including:
+•	Service Delivery: Providing and managing your taxi bookings, tracking your ride, and processing payments.
+•	Personalization: Tailoring the app experience to your preferences and optimizing our services.
+•	Communication: Sending important updates, promotions, and notifications related to your rides.
+•	Improvement: Analyzing usage patterns to enhance our app, services, and user experience.
+•	Legal Compliance: Fulfilling legal requirements and addressing disputes or issues.
+
+"</string>
+    <string name="License">"Sahayatri Taxi Booking Application
+This section outlines the licensing information and terms of use for the Sahayatri Taxi Booking Application ("Sahayatri App"). By downloading, installing, or using the Sahayatri App, you agree to comply with these terms.
+License Grant: Subject to your compliance with these terms, Sahayatri grants you a non-exclusive, non-transferable, revocable license to use the Sahayatri App for personal, non-commercial purposes. This license is limited to the object code version of the Sahayatri App.
+Restrictions: You shall not:
+•	Modify, reverse engineer, decompile, or disassemble the Sahayatri App.
+•	Reproduce, distribute, publicly display, or create derivative works of the Sahayatri App.
+•	Use the Sahayatri App for any purpose that violates applicable laws or regulations.
+Ownership: The Sahayatri App is owned and operated by Sahayatri and its licensors. All rights, title, and interest in and to the Sahayatri App, including all intellectual property rights, remain with Sahayatri and its licensors.
+Updates and Support: Sahayatri may provide updates to the Sahayatri App to improve functionality and user experience. You are responsible for keeping your Sahayatri App up-to-date. Support for the Sahayatri App may be provided at the discretion of Sahayatri.
+For any questions or concerns related to the Sahayatri App's licensing terms, please contact us at license@sahayatriapp.com."</string>
+    <string name="FAQ">"Welcome to the Sahayatri Taxi Booking Application FAQ section. Here are answers to some common questions about our app and services:
+1.	What is Sahayatri?
+Sahayatri is a taxi booking application that allows you to easily book rides for your travel needs. Whether it's a quick ride across town or an airport transfer, Sahayatri connects you with reliable drivers and provides a seamless transportation experience.
+2.	How do I download the Sahayatri app?
+You can download the Sahayatri app for free from the Google Play Store (Android). Just search for "Sahayatri" and follow the installation instructions.
+3.	How do I book a ride?
+ Booking a ride with Sahayatri is simple:
+•	Open the app and enter your destination.
+•	Confirm your booking.
+•	Track your ride
+4.	Are the drivers professional and safe?
+Yes, we carefully vet and select our drivers to ensure they meet our high standards for professionalism and safety. All drivers are licensed and undergo background checks before joining our platform.
+5.	How do I pay for my ride?
+You can securely pay for your ride through the app using various payment methods, including credit/debit cards, digital wallets, and mobile payment options.
+6.	Is my personal information safe?
+Absolutely. We take your privacy seriously and have strict security measures in place to protect your personal information. You can learn more about our privacy practices in our Privacy Policy section.
+7.	Do you offer customer support?
+ Yes, our customer support team is available 24/7 to assist you. You can reach out to us via email at support@sahayatriapp.com
+8.	Can I use Sahayatri in different cities?
+Sahayatri is continuously expanding its services to cover more cities. You can check the app to see if our services are available in your desired location.
+If you have any more questions or need further assistance, feel free to contact us. We're here to make your travel experience with Sahayatri as smooth and enjoyable as possible.
+"
+    </string>
+
 
 
 </resources>

@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Gradle: io.netty:netty-codec-http:4.1.53.Final">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/AndroidStudioProjects/Class3/caches/modules-2/files-2.1/io.netty/netty-codec-http/4.1.53.Final/9f62cacb250ec65bdb368a178d2453535c365947/netty-codec-http-4.1.53.Final.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/AndroidStudioProjects/Class3/caches/modules-2/files-2.1/io.netty/netty-codec-http/4.1.53.Final/a8c2909060ea3be919b5ab8b06cbb15036cb055b/netty-codec-http-4.1.53.Final-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/AndroidStudioProjects/Class3/caches/modules-2/files-2.1/io.netty/netty-codec-http/4.1.53.Final/bbd7946f54af514395232f581370dc45615f42be/netty-codec-http-4.1.53.Final-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
